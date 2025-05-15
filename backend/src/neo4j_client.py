@@ -8,7 +8,8 @@ from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain.chains import LLMChain
 from llm.get_llm import get_embedding_function
-
+import smtplib
+from email.mime.text import MIMEText
 
 MODEL_NAME = "gpt-4o-mini"
 

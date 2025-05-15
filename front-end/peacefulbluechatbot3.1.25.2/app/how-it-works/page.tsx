@@ -304,13 +304,11 @@ export default function HowItWorksPage() {
               <div className="space-x-4">
                 <Button
                   size="lg"
+                  aria-label="Bắt đầu chat với chatbot"
                   className="bg-purple-600 hover:bg-purple-700"
                   onClick={() => router.push("/")}
                 >
                   Bắt đầu chat ngay
-                </Button>
-                <Button size="lg" variant="outline">
-                  Gửi góp ý
                 </Button>
               </div>
             </div>

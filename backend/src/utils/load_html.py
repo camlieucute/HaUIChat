@@ -7,29 +7,45 @@ import logging
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
+
 def bs4_extractor(html: str) -> str:
     """
-    Extracts content from HTML using BeautifulSoup. 
-    Raises an exception if the expected elements are not found.
+    Extracts content from HTML using BeautifulSoup with multiple fallback selectors.
+    Tries common content container selectors before raising an exception.
     """
     try:
-        # Initialize BeautifulSoup with a valid parser
         soup = BeautifulSoup(html, "html.parser")
 
-        # Find the first element with the class 'news-detail'
-        target_element = soup.find(class_="news-detail")
+        # List of common content container selectors to try
+        selectors = [
+            {'class': 'news-detail'},  # Original selector
+            {'class': 'article-content'},
+            {'class': 'post-content'},
+            {'class': 'entry-content'},
+            {'id': 'content'},
+            {'role': 'article'},
+            {'itemprop': 'articleBody'}
+        ]
 
-        if target_element:
-            # Extract text from the target element
-            text = target_element.get_text(separator = "", strip = True)
-            # Replace multiple whitespace characters with a single space
-            cleaned_text = re.sub(r'\s+', ' ', text)
-            return cleaned_text
-        else:
-            raise ValueError("The HTML does not contain the required element with class 'news-detail'.")
+        # Try each selector until finding content
+        for selector in selectors:
+            target_element = soup.find(**selector)
+            if target_element:
+                text = target_element.get_text(separator=" ", strip=True)
+                cleaned_text = re.sub(r'\\s+', ' ', text)
+                return cleaned_text
+
+        # Fallback to body if no selectors match
+        body = soup.find('body')
+        if body:
+            text = body.get_text(separator=" ", strip=True)
+            return re.sub(r'\\s+', ' ', text)
+
+        raise ValueError("Could not find any content containers in the HTML")
     except Exception as e:
         logging.error(f"Error during extraction: {e}")
         raise
+
 
 def get_content_from_url(url):
     """
@@ -67,9 +83,10 @@ def get_content_from_url(url):
         logging.error(f"Error during content processing: {e}")
         raise
 
+
 # Example usage
 if __name__ == "__main__":
-    url = "https://www.haui.edu.vn/vn/hoat-dong-sinh-vien/nu-sinh-nganh-cong-nghe-ky-thuat-dien-tu-vien-thong-truong-thanh-tu-cong-tac-doan-hoi/66307"
+    url = "https://doanthanhnien.vn/tin-tuc/cong-tac-giao-duc/gia-lai-nang-cao-ky-nang-nghiep-vu-cho-luc-luong-bao-cao-vien-can-bo-doan-chu-chot"
 
     try:
         docs = get_content_from_url(url)

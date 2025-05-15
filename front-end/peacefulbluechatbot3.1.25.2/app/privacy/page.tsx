@@ -1,92 +1,121 @@
 "use client";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/shared/header";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+const PolicySection = ({ title, content }: { title: string; content: React.ReactNode }) => (
+  <div>
+    <h2 className="text-xl font-semibold text-blue-700 mb-2">{title}</h2>
+    <div>{content}</div>
+  </div>
+);
 
 export default function PolicyPage() {
   const router = useRouter();
-  const [agreed, setAgreed] = useState(false); // State để theo dõi đồng ý với chính sách
+  const [agreed, setAgreed] = useState(true);
+
+  useEffect(() => {
+    const hasAgreed = localStorage.getItem("policyAgreed");
+    if (hasAgreed === "true") {
+      router.push("/");
+    }
+  }, [router]);
+
+  const sections = [
+    {
+      title: "1. Chính Sách Bảo Mật",
+      content:
+        "Chúng tôi cam kết bảo mật tuyệt đối thông tin cá nhân của người dùng. Mọi dữ liệu thu thập sẽ chỉ được sử dụng nhằm cải thiện chất lượng dịch vụ và sẽ không được chia sẻ với bất kỳ bên thứ ba nào khi chưa có sự đồng ý rõ ràng từ bạn.",
+    },
+    {
+      title: "2. Chính Sách Sử Dụng",
+      content:
+        "Người dùng cam kết sử dụng trang web và dịch vụ vì mục đích hợp pháp, không xâm phạm đến quyền và lợi ích hợp pháp của tổ chức, cá nhân khác. Mọi hành vi can thiệp, phá hoại hệ thống hoặc sử dụng dịch vụ với mục đích vi phạm pháp luật đều bị nghiêm cấm.",
+    },
+    {
+      title: "3. Điều Khoản Sử Dụng",
+      content: (
+        <>
+          Khi sử dụng dịch vụ của chúng tôi, bạn mặc nhiên chấp thuận các điều khoản sau:
+          <ul className="list-disc list-inside mt-2 space-y-1 text-base text-gray-700">
+            <li>Tuân thủ đầy đủ các quy định pháp luật hiện hành.</li>
+            <li>
+              Không sử dụng dịch vụ vào mục đích vi phạm quyền sở hữu trí tuệ hoặc vi phạm pháp luật.
+            </li>
+            <li>
+              Chúng tôi có quyền thay đổi, cập nhật hoặc ngừng cung cấp dịch vụ mà không cần thông báo trước.
+            </li>
+          </ul>
+        </>
+      ),
+    },
+    {
+      title: "4. Quyền Sở Hữu Trí Tuệ",
+      content:
+        "Toàn bộ nội dung hiển thị trên trang web này, bao gồm nhưng không giới hạn: văn bản, hình ảnh, biểu tượng, mã nguồn và phần mềm… đều thuộc quyền sở hữu của chúng tôi hoặc các bên đối tác liên kết, được bảo hộ theo quy định của pháp luật về sở hữu trí tuệ. Mọi hành vi sao chép, sử dụng lại trái phép đều bị nghiêm cấm.",
+    },
+    {
+      title: "5. Thay Đổi Điều Khoản",
+      content:
+        "Chúng tôi có toàn quyền sửa đổi, bổ sung hoặc cập nhật nội dung các điều khoản này bất kỳ lúc nào mà không cần thông báo trước. Người dùng nên thường xuyên kiểm tra để nắm bắt những thay đổi mới nhất và đảm bảo quyền lợi của mình.",
+    },
+  ];
+
+  const handleContinue = () => {
+    localStorage.setItem("policyAgreed", "true");
+    router.push("/");
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Chính Sách và Điều Khoản
-      </h1>
+    <div className="min-h-screen bg-gray-50 px-4 py-8">
+      <div className="flex justify-center mb-6">
+        <Header />
+      </div>
+      <div className="container mx-auto max-w-4xl">
+        <Card className="shadow-xl border border-gray-200">
+          <CardHeader>
+            <CardTitle className="text-center text-3xl font-bold text-gray-800">
+              Chính Sách và Điều Khoản
+            </CardTitle>
+          </CardHeader>
 
-      <div className="space-y-6">
-        <h2 className="text-xl font-semibold">1. Chính Sách Bảo Mật</h2>
-        <p>
-          Chúng tôi cam kết bảo mật thông tin cá nhân của bạn. Mọi thông tin thu
-          thập từ bạn sẽ được sử dụng chỉ để cải thiện dịch vụ và không chia sẻ
-          với bên thứ ba mà không có sự đồng ý của bạn.
-        </p>
+          <CardContent className="space-y-8 text-justify text-gray-700 leading-relaxed">
+            {sections.map((section, index) => (
+              <PolicySection
+                key={index}
+                title={section.title}
+                content={section.content}
+              />
+            ))}
 
-        <h2 className="text-xl font-semibold">2. Chính Sách Sử Dụng</h2>
-        <p>
-          Bạn đồng ý sử dụng trang web này với mục đích hợp pháp và không vi
-          phạm quyền lợi của bất kỳ bên nào. Bạn không được phép can thiệp vào
-          hệ thống của chúng tôi hoặc sử dụng dịch vụ vào mục đích trái phép.
-        </p>
+            <div className="mt-8 border-t pt-6 space-y-4">
+              <label htmlFor="agree" className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  id="agree"
+                  checked={agreed}
+                  onChange={() => setAgreed(!agreed)}
+                  className="accent-blue-600 w-5 h-5"
+                />
+                <span className="text-sm text-gray-700">
+                  Tôi đã đọc và đồng ý với điều khoản sử dụng và chính sách bảo
+                  mật
+                </span>
+              </label>
 
-        <h2 className="text-xl font-semibold">3. Điều Khoản Sử Dụng</h2>
-        <p>
-          Bằng việc sử dụng dịch vụ của chúng tôi, bạn đồng ý với các điều khoản
-          sau đây:
-        </p>
-        <ul className="list-disc pl-6">
-          <li>Bạn phải tuân thủ các quy định pháp luật hiện hành.</li>
-          <li>
-            Không sử dụng dịch vụ của chúng tôi vào các hoạt động vi phạm quyền
-            sở hữu trí tuệ hoặc vi phạm pháp luật.
-          </li>
-          <li>
-            Chúng tôi có quyền thay đổi, sửa đổi hoặc ngừng dịch vụ mà không cần
-            thông báo trước.
-          </li>
-        </ul>
-
-        <h2 className="text-xl font-semibold">4. Quyền Sở Hữu Trí Tuệ</h2>
-        <p>
-          Tất cả nội dung trên trang web này, bao gồm nhưng không giới hạn ở văn
-          bản, hình ảnh, logo và phần mềm đều thuộc quyền sở hữu trí tuệ của
-          chúng tôi hoặc các đối tác và được bảo vệ bởi luật sở hữu trí tuệ.
-        </p>
-
-        <h2 className="text-xl font-semibold">5. Thay Đổi Điều Khoản</h2>
-        <p>
-          Chúng tôi có quyền thay đổi, cập nhật hoặc sửa đổi các điều khoản này
-          bất kỳ lúc nào mà không cần thông báo trước. Bạn nên kiểm tra các
-          điềukhoản này thường xuyên để cập nhật thông tin mới nhất.
-        </p>
-
-        <div className="mt-6">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="agree"
-              checked={agreed}
-              onChange={() => setAgreed(!agreed)}
-              className="mr-2"
-            />
-            <label htmlFor="agree">
-              Tôi đồng ý với Chính sách và Điều khoản
-            </label>
-          </div>
-          <Button
-            disabled={!agreed}
-            onClick={() => {
-              localStorage.setItem("policyAgreed", "true");
-              router.push("/"); // Quay lại trang chủ hoặc sang /chat tùy bạn
-            }}
-          >
-            Tiếp tục
-          </Button>
-        </div>
+              <Button
+                className="w-full"
+                disabled={!agreed}
+                onClick={handleContinue}
+              >
+                Tiếp tục
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

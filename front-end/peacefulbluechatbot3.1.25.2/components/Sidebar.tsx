@@ -27,7 +27,7 @@ export function AppSidebar() {
   const menuItems = [
     { title: "Trang chủ", icon: Home, href: "/" },
     { title: "Điểm tin", icon: Newspaper, href: "/news" },
-    { title: "Thông tin chung", icon: Book, href: "/getting-started" },
+    { title: "Hướng dẫn", icon: Book, href: "/getting-started" },
     { title: "Cách hoạt động", icon: HelpCircle, href: "/how-it-works" },
     { title: "FAQ", icon: MessageCircle, href: "/faq" },
   ];

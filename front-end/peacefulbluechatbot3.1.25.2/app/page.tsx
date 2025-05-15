@@ -71,7 +71,7 @@ export default function HomePage() {
           <main className="flex-1 overflow-auto p-4">
             <div className="h-[calc(100vh-8rem)] max-w-6xl mx-auto flex flex-col bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100">
               <div className="flex-grow p-4">
-                <Chatbot />
+                <Chatbot chatType="docs-rag" />
               </div>
               <footer className="px-4 py-2 border-t border-gray-200 bg-gray-50/50 text-xs">
                 <div className="flex items-center justify-between">
